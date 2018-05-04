@@ -10,7 +10,7 @@ import numpy as np
 import madmom
 import matplotlib.pyplot as plt
 #import signal
-sig = madmom.audio.signal.Signal("beat_it.mp3")
+sig = madmom.audio.signal.Signal("../data/beat_it.mp3")
 
 left_channel = sig[:,0]
 right_channel = sig[:,1]
