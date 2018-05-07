@@ -9,6 +9,8 @@ import numpy as np
 import madmom
 import os
 import time
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from scipy.ndimage.filters import maximum_filter
 
@@ -107,7 +109,7 @@ class audio_processor(object):
 #           the first dimension correspond to the channels
 #       time_interval: time interval between 2 points in nwpd          
 ###############################################################################
-    def nwpd(self, path = None):
+    def normalized_weighted_phase_deviation(self, path = None):
         if path == None:
             print('Enter file name please!')
             return None, None
@@ -168,7 +170,7 @@ def test(path):
         plt.savefig('superflux_{}.png'.format(i))
        
     start = time.time()  
-    nwpd, time_interval = myprocessor.nwpd(path)
+    nwpd, time_interval = myprocessor.normalized_weighted_phase_deviation(path)
     print("Running normalizaed weighted phase deviation use {} seconds.".format(time.time() - start))
     print(nwpd.shape)
     print(time_interval)
@@ -179,4 +181,4 @@ def test(path):
         plt.savefig('nwpd_{}.png'.format(i))
     
 if __name__== '__main__':
-    test('./data/beat_it.mp3')
+    test('../data/beat_it.mp3')
