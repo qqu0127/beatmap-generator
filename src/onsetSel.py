@@ -26,7 +26,7 @@ class onsetSel (object):
         self.m = m
         self.w = w
         self.phi = phi
-
+    
     def find_peaks(self):
         for i in range(0, self.onsetSeqLen):
             if self.apply_std1(i) and self.apply_std2(i) and self.apply_std3(i):
@@ -35,7 +35,11 @@ class onsetSel (object):
             else:
                 self.peaks.append(0)
             self.update_thres(i)
+        return self.quantify()
 
+    def quantify (self):
+        return self.peaks
+    
     def apply_std1 (self, i):
         if i - self.w < 0:
             j = 0
@@ -83,13 +87,14 @@ def main(path):
     print(time_interval)
    
     selector = onsetSel(sf[0, :], 3, 3, 0.3, 0.8)
-    selector.find_peaks()
+    quantified = selector.find_peaks()
     
     plt.figure()
     fig,left_axis=plt.subplots()    
     right_axis = left_axis.twinx()
     p1, = left_axis.plot(sf[0, : 2000])
-    p2, = right_axis.plot(selector.peaks[0 :2000], 'r--')    
+    p2, = right_axis.plot(quantified[0 :2000], 'r--')    
+    right_axis.set_ylim(0, 5)
     plt.savefig('sf.png')
 
     start = time.time() 
@@ -99,13 +104,14 @@ def main(path):
     print(time_interval)
      
     selector = onsetSel(sf[0, :], 3, 3, 0.3, 0.8)
-    selector.find_peaks()
+    quantified = selector.find_peaks()
     
     plt.figure()
     fig,left_axis=plt.subplots()    
     right_axis = left_axis.twinx()
     p1, = left_axis.plot(sf[0, : 2000])
-    p2, = right_axis.plot(selector.peaks[0 :2000], 'r--')    
+    p2, = right_axis.plot(quantified[0 :2000], 'r--')    
+    right_axis.set_ylim(0, 5)
     plt.savefig('superflux.png')
 
     start = time.time()  
@@ -114,13 +120,14 @@ def main(path):
     print(nwpd.shape)
     print(time_interval)
     selector = onsetSel(sf[0, :], 3, 3, 0.3, 0.8)
-    selector.find_peaks()
+    quantified = selector.find_peaks()
     
     plt.figure()
     fig,left_axis=plt.subplots()    
     right_axis = left_axis.twinx()
     p1, = left_axis.plot(sf[0, : 2000])
-    p2, = right_axis.plot(selector.peaks[0 :2000], 'r--')    
+    p2, = right_axis.plot(quantified[0 :2000], 'r--')    
+    right_axis.set_ylim(0, 5)
     plt.savefig('nwpd.png')
 
 if __name__== '__main__':
