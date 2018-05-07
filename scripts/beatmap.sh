@@ -4,5 +4,5 @@ docker run \
   -u tong \
   --name beatmap \
   --volume ~/Projects/beatmap:/home/tong/beatmap \
-  beatmap:base
+  beatmap:sklearn
 
