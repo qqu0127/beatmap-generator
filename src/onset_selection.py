@@ -2,7 +2,7 @@
 
 import matplotlib
 matplotlib.use('Agg')
-import audio_process as ap
+from audio_detection import audio_detector
 import numpy as np
 import madmom
 import os
@@ -28,6 +28,9 @@ class onset_selector(object):
         self.phi = phi
     
     def find_peaks(self):
+        if(self.peaks is not []):
+            self.peaks = []
+            self.peakPos = []
         for i in range(0, self.onsetSeqLen):
             if self.apply_std1(i) and self.apply_std2(i) and self.apply_std3(i):
                 self.peakPos.append(i);
@@ -38,7 +41,7 @@ class onset_selector(object):
         return self.quantify()
 
     def quantify (self):
-        return self.peaks
+        return np.array(self.peaks)
     
     def apply_std1 (self, i):
         if i - self.w < 0:
@@ -78,7 +81,7 @@ class onset_selector(object):
         self.thres = max(self.onsetSeq[i], self.alpha * self.thres + (1 - self.alpha) * self.onsetSeq[i])
 
 def test(path):
-    myprocessor = ap.audio_detector(2048, 441)
+    myprocessor = audio_detector(2048, 441)
 
     start = time.time() 
     sf, time_interval = myprocessor.spectralflux(path)
@@ -86,7 +89,7 @@ def test(path):
     print(sf.shape)
     print(time_interval)
    
-    selector = onsetSel(sf[0, :], 3, 3, 0.3, 0.8)
+    selector = onset_selector(sf[0, :], 3, 3, 0.3, 0.8)
     quantified = selector.find_peaks()
     
     plt.figure()
@@ -119,7 +122,7 @@ def test(path):
     print("Running normalizaed weighted phase deviation use {} seconds.".format(time.time() - start))
     print(nwpd.shape)
     print(time_interval)
-    selector = onsetSel(sf[0, :], 3, 3, 0.3, 0.8)
+    selector = onset_selector(sf[0, :], 3, 3, 0.3, 0.8)
     quantified = selector.find_peaks()
     
     plt.figure()
