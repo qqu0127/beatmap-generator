@@ -14,7 +14,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from scipy.ndimage.filters import maximum_filter
 
-class audio_detector(object):
+class onset_detector(object):
     def __init__(self, frame_size = 2048, hop_size = 441):
         self.frame_size = frame_size
         self.hop_size = hop_size
@@ -145,6 +145,7 @@ class audio_detector(object):
     
 
 def test(path):
+<<<<<<< HEAD:src/audio_detection.py
 <<<<<<< HEAD:src/audio_process.py
 
     print(path)
@@ -153,6 +154,9 @@ def test(path):
 =======
     myprocessor = audio_detector(2048, 441)
 >>>>>>> 0b14a2ffaf536427e8f8ea0d2e645f5dd9f0b6dc:src/audio_detection.py
+=======
+    myprocessor = onset_detector(2048, 441)
+>>>>>>> f27423a905bd012b93ec2228bb37030cc2ba63d4:src/onset_detection.py
 
     # start = time.time()
     # sf, time_interval = myprocessor.spectralflux(path)
