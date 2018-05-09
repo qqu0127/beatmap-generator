@@ -2,7 +2,7 @@
 
 import matplotlib
 matplotlib.use('Agg')
-from audio_detection import audio_detector
+from onset_detection import onset_detector
 import numpy as np
 import madmom
 import os
@@ -81,7 +81,7 @@ class onset_selector(object):
         self.thres = max(self.onsetSeq[i], self.alpha * self.thres + (1 - self.alpha) * self.onsetSeq[i])
 
 def test(path):
-    myprocessor = audio_detector(2048, 441)
+    myprocessor = onset_detector(2048, 441)
 
     start = time.time() 
     sf, time_interval = myprocessor.spectralflux(path)

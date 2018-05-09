@@ -12,7 +12,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from scipy.ndimage.filters import maximum_filter
-from audio_detection import audio_detector
+from onset_detection import onset_detector
 from onset_selection import onset_selector
 import json
 import random
@@ -73,7 +73,7 @@ class beat_mapper(object):
 
 def test():
 	# initialize the audio detector and conduct filtering
-	ad = audio_detector(2048, 411)
+	ad = onset_detector(2048, 411)
 	sf, time_interval = ad.spectralflux('../data/beat_it.mp3')
 	# initialize onset selector for beat selection
 	selector = onset_selector(sf[0, :], 3, 3, 0.3, 0.8)
