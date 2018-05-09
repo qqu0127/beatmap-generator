@@ -145,18 +145,10 @@ class onset_detector(object):
     
 
 def test(path):
-<<<<<<< HEAD:src/audio_detection.py
-<<<<<<< HEAD:src/audio_process.py
 
     print(path)
 
-    myprocessor = audio_processor(2048, 441)
-=======
-    myprocessor = audio_detector(2048, 441)
->>>>>>> 0b14a2ffaf536427e8f8ea0d2e645f5dd9f0b6dc:src/audio_detection.py
-=======
     myprocessor = onset_detector(2048, 441)
->>>>>>> f27423a905bd012b93ec2228bb37030cc2ba63d4:src/onset_detection.py
 
     # start = time.time()
     # sf, time_interval = myprocessor.spectralflux(path)
@@ -200,9 +192,4 @@ def test(path):
         plt.savefig('nwpd_{}.png'.format(i))
     
 if __name__== '__main__':
-<<<<<<< HEAD:src/audio_process.py
-    test("/Users/wzq/cs130/beatmap/beatmap-generator/data/" + "beat_it.mp3")
-    # test('./data/beat_it.mp3')
-=======
     test('../data/beat_it.mp3')
->>>>>>> 0b14a2ffaf536427e8f8ea0d2e645f5dd9f0b6dc:src/audio_detection.py
