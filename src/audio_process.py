@@ -143,40 +143,52 @@ class audio_processor(object):
     
 
 def test(path):
+
+    print(path)
+
     myprocessor = audio_processor(2048, 441)
 
-    start = time.time() 
-    sf, time_interval = myprocessor.spectralflux(path)
-    print("Running spectral flux use {} seconds.".format(time.time() - start))    
-    print(sf.shape)
-    print(time_interval)
-    N = len(sf)
-    for i in range(N):
-        plt.figure()
-        plt.plot(sf[i, : 2000])
-        plt.savefig('sf_{}.png'.format(i))
-           
-    start = time.time() 
-    sf, time_interval = myprocessor.superflux(path)
-    print("Running super flux use {} seconds.".format(time.time() - start))   
-    print(sf.shape)
-    print(time_interval)
-    N = len(sf)
-    for i in range(N):
-        plt.figure()
-        plt.plot(sf[i, : 2000])
-        plt.savefig('superflux_{}.png'.format(i))
+    # start = time.time()
+    # sf, time_interval = myprocessor.spectralflux(path)
+    # print("Running spectral flux use {} seconds.".format(time.time() - start))
+    # print(sf.shape)
+    # print(time_interval)
+    # N = len(sf)
+    # for i in range(N):
+    #     plt.figure()
+    #     plt.plot(sf[i, : 2000])
+    #     plt.savefig('sf_{}.png'.format(i))
+    #
+    # start = time.time()
+    # sf, time_interval = myprocessor.superflux(path)
+    # print("Running super flux use {} seconds.".format(time.time() - start))
+    # print(sf.shape)
+    # print(time_interval)
+    # N = len(sf)
+    # for i in range(N):
+    #     plt.figure()
+    #     plt.plot(sf[i, : 2000])
+    #     plt.savefig('superflux_{}.png'.format(i))
        
     start = time.time()  
     nwpd, time_interval = myprocessor.nwpd(path)
     print("Running normalizaed weighted phase deviation use {} seconds.".format(time.time() - start))
     print(nwpd.shape)
     print(time_interval)
+
+    #quantize
     N = len(nwpd)
+
+
+    #visualize
+    for i in range(N):
+        nwpd[nwpd < 0.0001] = 0
+
     for i in range(N):
         plt.figure()
-        plt.plot(nwpd[i,:2000])
+        plt.plot(nwpd[i, :2000])
         plt.savefig('nwpd_{}.png'.format(i))
     
 if __name__== '__main__':
-    test('./data/beat_it.mp3')
+    test("/Users/wzq/cs130/beatmap/beatmap-generator/data/" + "beat_it.mp3")
+    # test('./data/beat_it.mp3')
