@@ -150,27 +150,27 @@ def test(path):
 
     myprocessor = onset_detector(2048, 441)
 
-    # start = time.time()
-    # sf, time_interval = myprocessor.spectralflux(path)
-    # print("Running spectral flux use {} seconds.".format(time.time() - start))
-    # print(sf.shape)
-    # print(time_interval)
-    # N = len(sf)
-    # for i in range(N):
-    #     plt.figure()
-    #     plt.plot(sf[i, : 2000])
-    #     plt.savefig('sf_{}.png'.format(i))
-    #
-    # start = time.time()
-    # sf, time_interval = myprocessor.superflux(path)
-    # print("Running super flux use {} seconds.".format(time.time() - start))
-    # print(sf.shape)
-    # print(time_interval)
-    # N = len(sf)
-    # for i in range(N):
-    #     plt.figure()
-    #     plt.plot(sf[i, : 2000])
-    #     plt.savefig('superflux_{}.png'.format(i))
+    start = time.time()
+    sf, time_interval = myprocessor.spectralflux(path)
+    print("Running spectral flux use {} seconds.".format(time.time() - start))
+    print(sf.shape)
+    print(time_interval)
+    N = len(sf)
+    for i in range(N):
+        plt.figure()
+        plt.plot(sf[i, : 2000])
+        plt.savefig('sf_{}.png'.format(i))
+
+    start = time.time()
+    sf, time_interval = myprocessor.superflux(path)
+    print("Running super flux use {} seconds.".format(time.time() - start))
+    print(sf.shape)
+    print(time_interval)
+    N = len(sf)
+    for i in range(N):
+        plt.figure()
+        plt.plot(sf[i, : 2000])
+        plt.savefig('superflux_{}.png'.format(i))
        
     start = time.time()  
     nwpd, time_interval = myprocessor.normalized_weighted_phase_deviation(path)
