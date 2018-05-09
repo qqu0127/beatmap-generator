@@ -9,10 +9,12 @@ import numpy as np
 import madmom
 import os
 import time
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from scipy.ndimage.filters import maximum_filter
 
-class audio_processor(object):
+class audio_detector(object):
     def __init__(self, frame_size = 2048, hop_size = 441):
         self.frame_size = frame_size
         self.hop_size = hop_size
@@ -107,7 +109,7 @@ class audio_processor(object):
 #           the first dimension correspond to the channels
 #       time_interval: time interval between 2 points in nwpd          
 ###############################################################################
-    def nwpd(self, path = None):
+    def normalized_weighted_phase_deviation(self, path = None):
         if path == None:
             print('Enter file name please!')
             return None, None
@@ -143,10 +145,14 @@ class audio_processor(object):
     
 
 def test(path):
+<<<<<<< HEAD:src/audio_process.py
 
     print(path)
 
     myprocessor = audio_processor(2048, 441)
+=======
+    myprocessor = audio_detector(2048, 441)
+>>>>>>> 0b14a2ffaf536427e8f8ea0d2e645f5dd9f0b6dc:src/audio_detection.py
 
     # start = time.time()
     # sf, time_interval = myprocessor.spectralflux(path)
@@ -171,7 +177,7 @@ def test(path):
     #     plt.savefig('superflux_{}.png'.format(i))
        
     start = time.time()  
-    nwpd, time_interval = myprocessor.nwpd(path)
+    nwpd, time_interval = myprocessor.normalized_weighted_phase_deviation(path)
     print("Running normalizaed weighted phase deviation use {} seconds.".format(time.time() - start))
     print(nwpd.shape)
     print(time_interval)
@@ -190,5 +196,9 @@ def test(path):
         plt.savefig('nwpd_{}.png'.format(i))
     
 if __name__== '__main__':
+<<<<<<< HEAD:src/audio_process.py
     test("/Users/wzq/cs130/beatmap/beatmap-generator/data/" + "beat_it.mp3")
     # test('./data/beat_it.mp3')
+=======
+    test('../data/beat_it.mp3')
+>>>>>>> 0b14a2ffaf536427e8f8ea0d2e645f5dd9f0b6dc:src/audio_detection.py
