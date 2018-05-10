@@ -2,7 +2,7 @@
 
 import matplotlib
 matplotlib.use('Agg')
-from audio_detection import audio_detector
+from onset_detection import onset_detector
 import numpy as np
 import madmom
 import os
@@ -10,11 +10,11 @@ import time
 import matplotlib.pyplot as plt
 from scipy.ndimage.filters import maximum_filter
 from sklearn import preprocessing
-import onset_selection
+from onset_selection import  onset_selector
 
 
 def main(path):
-    myprocessor = ap.audio_processor(2048, 441)
+    myprocessor = onset_detector(2048, 441)
 
     # start = time.time()
     # sf, time_interval = myprocessor.spectralflux(path)
@@ -51,11 +51,11 @@ def main(path):
     # plt.savefig('superflux.png')
 
     start = time.time()
-    nwpd, time_interval = myprocessor.nwpd(path)
+    nwpd, time_interval = myprocessor.normalized_weighted_phase_deviation(path)
     print("Running normalizaed weighted phase deviation use {} seconds.".format(time.time() - start))
     print(nwpd.shape)
     print(time_interval)
-    selector = onset_selection(nwpd[0, :], 3, 3, 0.3, 0.8)
+    selector = onset_selector(nwpd[0, :], 10, 3, 3, 0.3, 0.8)
     quantified = selector.find_peaks()
 
     # print(len(quantified))
