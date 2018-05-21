@@ -11,77 +11,92 @@ import matplotlib.pyplot as plt
 from scipy.ndimage.filters import maximum_filter
 from sklearn import preprocessing
 
-PARAM_SETS = {1: [10, 3, 3, 0.3, 0.2]}
+PARAM_SETS = {1: [10, 3, 3, 0.3, 0.2], "nwpd": [10, 3, 3, 0.3, 0.5]}
 
 class onset_selector(object):
     def __init__(self, onsets, numOfLevel, m, w, alpha, phi):
-        self.onsetsOrg = onsets
-        self.onsetsNorm = preprocessing.scale(self.onsetsOrg).tolist() # normalize
-        self.onsetsLen = onsets.shape[0] 
-        self.onsetsPeakPos = []
-        self.onsetsPeaks = []
-        self.onsetStride = max(self.onsetsOrg) / float(numOfLevel)
-        self.thres = 0
-        self.thresQue = []
-        self.alpha = alpha
-        self.m = m
-        self.w = w
-        self.phi = phi
+        self.__onsetsOrg = onsets
+        self.__onsetsNorm = preprocessing.scale(self.__onsetsOrg).tolist() # normalize
+        self.__onsetsLen = onsets.shape[0] 
+        self.__onsetsPeakPos = []
+        self.__onsetsPeaks = []
+        self.__onsetStride = max(self.__onsetsOrg) / float(numOfLevel)
+        self.__thres = 0
+        self.__thresQue = []
+        self.__alpha = alpha
+        self.__m = m
+        self.__w = w
+        self.__phi = phi
     
     def find_peaks(self):
-        if(self.onsetsPeaks is not []):
-            self.onsetsPeaks = []
-            self.onsetsPeakPos = []
-        for i in range(0, self.onsetsLen):
-            if self.apply_std1(i) and self.apply_std2(i) and self.apply_std3(i):
-                self.onsetsPeakPos.append(i);
-                self.onsetsPeaks.append(self.onsetsOrg[i])
+        if(self.__onsetsPeaks is not []):
+            self.__onsetsPeaks = []
+            self.__onsetsPeakPos = []
+        for i in range(0, self.__onsetsLen):
+            if self.__check_std1(i) and self.__check_std2(i) and self.__check_std3(i):
+                self.__onsetsPeakPos.append(i);
+                self.__onsetsPeaks.append(self.__onsetsOrg[i])
             else:
-                self.onsetsPeaks.append(0)
-            self.update_thres(i)
-        return self.quantify()
+                self.__onsetsPeaks.append(0)
+            self.__update_thres(i)
+        return self.__quantify()
 
-    def quantify (self):
-        return np.array(list(map(lambda x: int(x / self.onsetStride), self.onsetsPeaks)))
+    def __quantify (self):
+        if self.__onsetStride >= 1.0:
+            return np.array(list(map(lambda x: int((x + self.__onsetStride - 1) / self.__onsetStride), self.__onsetsPeaks)))
+        else:
+            res = []
+            for item in self.__onsetsPeaks:
+                if item == 0: 
+                    res.append(item)
+                else:
+                    catalog = int(item / self.__onsetStride)
+                    if catalog == 0:
+                        res.append(1)  
+                    elif catalog >= 10:
+                            res.append(10)
+                    else:
+                        res.append(item)
+            return np.array(res)
     
-    def apply_std1 (self, i):
-        if i - self.w < 0:
+    def __check_std1 (self, i):
+        if i - self.__w < 0:
             j = 0
         else:
-            j = i - self.w
+            j = i - self.__w
         
-        if i + self.w + 1 > self.onsetsLen:
-            bound = self.onsetsLen  
+        if i + self.__w + 1 > self.__onsetsLen:
+            bound = self.__onsetsLen  
         else:
-            bound = i + self.w + 1
+            bound = i + self.__w + 1
         
         while j < bound:
-            if self.onsetsNorm[i] < self.onsetsNorm[j]:
+            if self.__onsetsNorm[i] < self.__onsetsNorm[j]:
                 break
             j += 1        
         return j == bound
  
-    def apply_std2 (self, i):
-        if i - self.m * self.w < 0:
+    def __check_std2 (self, i):
+        if i - self.__m * self.__w < 0:
             left = 0
         else:
-            left =  i - self.m * self.w
+            left =  i - self.__m * self.__w
 
-        if i + self.w + 1 > self.onsetsLen: # right cannot be reached
-            right = self.onsetsLen 
+        if i + self.__w + 1 > self.__onsetsLen: # right cannot be reached
+            right = self.__onsetsLen 
         else:
-            right = i + self.w + 1
+            right = i + self.__w + 1
 
-        return self.onsetsNorm[i] >= sum(self.onsetsNorm[left: right]) / (right - left) + self.phi
+        return self.__onsetsNorm[i] >= sum(self.__onsetsNorm[left: right]) / (right - left) + self.__phi
 
-    def apply_std3 (self, i):
-        return self.onsetsNorm[i] >= self.thres
+    def __check_std3 (self, i):
+        return self.__onsetsNorm[i] >= self.__thres
 
-    def update_thres (self, i):
-        self.thresQue.append(self.thres)
-        self.thres = max(self.onsetsNorm[i], self.alpha * self.thres + (1 - self.alpha) * self.onsetsNorm[i])
+    def __update_thres (self, i):
+        self.__thresQue.append(self.__thres)
+        self.__thres = max(self.__onsetsNorm[i], self.__alpha * self.__thres + (1 - self.__alpha) * self.__onsetsNorm[i])
    
-    def channel_coalesce(self):
+    def __channel_coalesce(self):
         #TBD
         pass
     
@@ -118,7 +133,7 @@ def test(path):
     fig,left_axis=plt.subplots()    
     right_axis = left_axis.twinx()
     p1, = left_axis.plot(sf[0, : 2000])
-    p2, = right_axis.plot(quantified[0 :2000], 'r--')    
+    p2, = right_axis.plot(quantified[0 : 2000], 'r--')    
     #right_axis.set_ylim(0, 5)
     plt.savefig('superflux.png')
 
@@ -127,14 +142,14 @@ def test(path):
     print("Running normalizaed weighted phase deviation use {} seconds.".format(time.time() - start))
     print(nwpd.shape)
     print(time_interval)
-    selector = onset_selector(sf[0, :], 10, 3, 3, 0.3, 0.8)
+    selector = onset_selector(nwpd[0, :], 10, 3, 3, 0.3, 0.5) # this set of params reduce probability of false negative
     quantified = selector.find_peaks()
     
     plt.figure()
     fig,left_axis=plt.subplots()    
     right_axis = left_axis.twinx()
-    p1, = left_axis.plot(sf[0, : 2000])
-    p2, = right_axis.plot(quantified[0 :2000], 'r--')    
+    p1, = left_axis.plot(nwpd[0, : 2000])
+    p2, = right_axis.plot(quantified[0 : 2000], 'r--')    
     #right_axis.set_ylim(0, 5)
     plt.savefig('nwpd.png')
 
