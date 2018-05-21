@@ -41,7 +41,7 @@ class beat_mapper(object):
 		'''
 		cnt = 0
 		for i in self.quantified:
-			if(i == 1):
+			if(i > 0):
 				k = random.randint(0, self.num_track - 1)
 				self.mapped[cnt][k] = 1
 				self.beat_cnt += 1
@@ -76,7 +76,7 @@ def test():
 	ad = onset_detector(2048, 411)
 	sf, time_interval = ad.spectralflux('../data/beat_it.mp3')
 	# initialize onset selector for beat selection
-	selector = onset_selector(sf[0, :], 3, 3, 0.3, 0.8)
+	selector = onset_selector(sf[0, :], 10, 3, 3, 0.3, 0.8)
 	quantified = selector.find_peaks()
 
 	print("Finish detection and beat selection.")
