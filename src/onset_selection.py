@@ -28,7 +28,7 @@ class onset_selector(object):
         self.__w = w
         self.__phi = phi
     
-    def find_peaks(self):
+    def find_peaks(self, intvl = 200):
         if(self.__onsetsPeaks is not []):
             self.__onsetsPeaks = []
             self.__onsetsPeakPos = []
@@ -39,7 +39,17 @@ class onset_selector(object):
             else:
                 self.__onsetsPeaks.append(0)
             self.__update_thres(i)
+        self.__filter(intvl)
         return self.__quantify()
+
+    def __filter (self, intvl):
+        nextPos = 0 
+        for i in range(self.__onsetsLen):
+            if i > nextPos and self.__onsetsPeaks[i] > 0:
+                nextPos = i + intvl
+            else:
+                self.__onsetsPeaks[i] = 0
+
 
     def __quantify (self):
         if self.__onsetStride >= 1.0:
