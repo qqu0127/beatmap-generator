@@ -13,11 +13,25 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from scipy.ndimage.filters import maximum_filter
+from scipy import signal
 
 class onset_detector(object):
     def __init__(self, frame_size = 2048, hop_size = 441):
         self.frame_size = frame_size
         self.hop_size = hop_size
+        self.low_freq = 0.0
+        self.high_freq = 1.0
+        
+    def filter_signal(self, fre_signal):
+        N = fre_signal.shape[0]
+        length = fre_signal.shape[1]
+        low_fre_n = int(length * self.low_freq) + 1
+        high_fre_n = int(length * self.high_freq)
+        for i in range(N):
+            fre_signal[i][0: low_fre_n] = np.zeros((low_fre_n))
+            fre_signal[i][high_fre_n:] = np.zeros((length - high_fre_n))
+        
+        return fre_signal
     
 ###############################################################################
 # Do onset detection using spectral flux algorithm
@@ -28,7 +42,7 @@ class onset_detector(object):
 #           the first dimension correspond to the channels
 #       time_interval: time interval between 2 points in sf        
 ###############################################################################    
-    def spectralflux(self, path = None):
+    def spectralflux(self, path = None, do_filtering = False, low_freq = 40.0, high_freq = 200.0):
         if path == None:
             print('Enter file name please!')
             return None, None
@@ -38,6 +52,9 @@ class onset_detector(object):
         sig = madmom.audio.signal.Signal(path)
         num_channels = sig.num_channels
         sample_rate = sig.sample_rate
+        # covert analog frequency to digital frequency
+        self.high_freq = 2 * float(high_freq) / sample_rate
+        self.low_freq = 2 * float(low_freq) / sample_rate
         time_interval = self.hop_size / sample_rate
         
         sf = None
@@ -45,6 +62,8 @@ class onset_detector(object):
             tmp = sig[:, i]
             tmpframe = madmom.audio.signal.FramedSignal(tmp, frame_size = self.frame_size, hop_size = self.hop_size)
             tmpstft = madmom.audio.stft.STFT(tmpframe)
+            if do_filtering:
+                tmpstft = self.filter_signal(tmpstft)
             tmpspec = madmom.audio.spectrogram.Spectrogram(tmpstft)
             tmpdiff = np.zeros(tmpspec.shape)
             tmpdiff[1:] = np.diff(tmpspec, axis = 0)
@@ -66,7 +85,7 @@ class onset_detector(object):
 #           the first dimension correspond to the channels
 #       time_interval: time interval between 2 points in sf         
 ###############################################################################    
-    def superflux(self, path = None):
+    def superflux(self, path = None, do_filtering = False, low_freq = 40.0, high_freq = 200.0):
         if path == None:
             print('Enter file name please!')
             return None, None
@@ -76,6 +95,9 @@ class onset_detector(object):
         sig = madmom.audio.signal.Signal(path)
         num_channels = sig.num_channels
         sample_rate = sig.sample_rate
+        # covert analog frequency to digital frequency
+        self.high_freq = 2 * high_freq / sample_rate
+        self.low_freq = 2 * low_freq/ sample_rate
         time_interval = self.hop_size / sample_rate
         
         sf = None
@@ -83,6 +105,8 @@ class onset_detector(object):
             tmp = sig[:, i]
             tmpframe = madmom.audio.signal.FramedSignal(tmp, frame_size = self.frame_size, hop_size = self.hop_size)
             tmpstft = madmom.audio.stft.STFT(tmpframe)
+            if do_filtering:
+                tmpstft = self.filter_signal(tmpstft)
             tmpspec = madmom.audio.spectrogram.Spectrogram(tmpstft)
             tmpfilt_spec = madmom.audio.spectrogram.FilteredSpectrogram(tmpspec, filterbank=madmom.audio.filters.LogFilterbank, num_bands=24)
             tmplog_spec = madmom.audio.spectrogram.LogarithmicSpectrogram(tmpfilt_spec, add=1)
@@ -109,7 +133,7 @@ class onset_detector(object):
 #           the first dimension correspond to the channels
 #       time_interval: time interval between 2 points in nwpd          
 ###############################################################################
-    def normalized_weighted_phase_deviation(self, path = None):
+    def normalized_weighted_phase_deviation(self, path = None, do_filtering = False, low_freq = 20.0, high_freq =200.0):
         if path == None:
             print('Enter file name please!')
             return None, None
@@ -119,6 +143,8 @@ class onset_detector(object):
         sig = madmom.audio.signal.Signal(path)
         num_channels = sig.num_channels
         sample_rate = sig.sample_rate
+        self.high_freq = 2 * high_freq / sample_rate
+        self.low_freq = 2 * low_freq/ sample_rate
         time_interval = self.hop_size / sample_rate
         
         nwpd = None
@@ -126,6 +152,8 @@ class onset_detector(object):
             tmp = sig[:, i]
             tmpframe = madmom.audio.signal.FramedSignal(tmp, frame_size = self.frame_size, hop_size = self.hop_size)
             tmpstft = madmom.audio.stft.STFT(tmpframe)
+            if do_filtering:
+                tmpstft = self.filter_signal(tmpstft)
             tmpphase = madmom.audio.stft.phase(tmpstft)
             tmpphase_diff = np.diff(tmpphase, axis = 0)
             tmpphase_diff_2nd = np.zeros(tmpphase.shape) 
@@ -151,29 +179,29 @@ def test(path):
     myprocessor = onset_detector(2048, 441)
 
     start = time.time()
-    sf, time_interval = myprocessor.spectralflux(path)
+    sf, time_interval = myprocessor.spectralflux(path, True)
     print("Running spectral flux use {} seconds.".format(time.time() - start))
     print(sf.shape)
     print(time_interval)
     N = len(sf)
     for i in range(N):
         plt.figure()
-        plt.plot(sf[i, : 2000])
-        plt.savefig('sf_{}.png'.format(i))
+        plt.plot(sf[i, : 4000])
+        plt.savefig('sf_2{}.png'.format(i))
 
     start = time.time()
-    sf, time_interval = myprocessor.superflux(path)
+    sf, time_interval = myprocessor.superflux(path, True)
     print("Running super flux use {} seconds.".format(time.time() - start))
     print(sf.shape)
     print(time_interval)
     N = len(sf)
     for i in range(N):
         plt.figure()
-        plt.plot(sf[i, : 2000])
-        plt.savefig('superflux_{}.png'.format(i))
+        plt.plot(sf[i, : 4000])
+        plt.savefig('superflux_2{}.png'.format(i))
        
     start = time.time()  
-    nwpd, time_interval = myprocessor.normalized_weighted_phase_deviation(path)
+    nwpd, time_interval = myprocessor.normalized_weighted_phase_deviation(path, True)
     print("Running normalizaed weighted phase deviation use {} seconds.".format(time.time() - start))
     print(nwpd.shape)
     print(time_interval)
@@ -188,8 +216,8 @@ def test(path):
 
     for i in range(N):
         plt.figure()
-        plt.plot(nwpd[i, :2000])
-        plt.savefig('nwpd_{}.png'.format(i))
+        plt.plot(nwpd[i, :4000])
+        plt.savefig('nwpd_2{}.png'.format(i))
     
 if __name__== '__main__':
     test('../data/beat_it.mp3')
