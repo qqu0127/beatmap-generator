@@ -54,7 +54,7 @@ class beat_mapper(object):
 			@output:
 				null
 		'''
-		name_list = ['random', 'stair', 'random', 'switch', 'stair_rev']
+		name_list = ['random', 'stair', 'switch', 'stair_rev']
 		for name in name_list:
 			this_state_machine.add_state(State.make_state(name))
 
@@ -105,20 +105,18 @@ class beat_mapper(object):
 
 def test():
 	# initialize the audio detector and conduct filtering
-	ad = onset_detector(2048, 411)
-	sf, time_interval = ad.spectralflux('../data/beat_it.mp3')
+	detector = onset_detector(2048, 411)
+	sf, time_interval = detector.spectralflux('../data/beat_it.mp3', True)
 	# initialize onset selector for beat selection
-	selector = onset_selector(sf[0, :], 10, 3, 3, 0.3, 0.8)
+	selector = onset_selector(sf, 10, 3, 3, 0.3, 0.8)
 	
 	beat_array = selector.find_peaks()
 
-	com_beat_array = np.array([beat_array, beat_array]) # compose a nparray input for testing
-
 	print("Finish detection and beat selection.")
-	print(com_beat_array.shape)
+	print(beat_array.shape)
 	start = time.time()
 	# start beat mapping, this test case map the beats into 4 tracks
-	bm = beat_mapper(com_beat_array, time_interval, 4)
+	bm = beat_mapper(beat_array, time_interval, 4)
 	mapped = bm.map_to_tracks() # this is the essential method
 
 	print("Finish mapping.")
