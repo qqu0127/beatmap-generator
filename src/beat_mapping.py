@@ -29,18 +29,18 @@ class beat_mapper(object):
 		self.beat_array = beat_array
 		self.time_interval = time_interval
 		self.num_track = num_track
-		#self.mapped = np.zeros((len(beat_array), num_track), dtype=int)
+		self.mapped = np.zeros((beat_array.shape[1], num_track), dtype=int)
 		self.beat_cnt = 0
 
-		self.mapping_state_machine = StateMachine(beat_array, num_track)
-		self.setup_state_machine()
+		#self.mapping_state_machine = StateMachine(beat_array, num_track)
+		#self.setup_state_machine()
 
 		random.seed(rand_seed)
 
-	def setup_state_machine(self):
+	def setup_state_machine(self, this_state_machine):
 		name_list = ['random', 'stair', 'random', 'switch', 'stair_rev']
 		for name in name_list:
-			self.mapping_state_machine.add_state(State.make_state(name))
+			this_state_machine.add_state(State.make_state(name))
 
 	def map_to_tracks(self):
 		'''
@@ -64,8 +64,14 @@ class beat_mapper(object):
 		'''
 
 		# inpelement state machine
-		self.mapping_state_machine.run()
-		self.mapped = self.mapping_state_machine.mapped
+
+		for channel_beat_array in self.beat_array:
+			mapping_state_machine = StateMachine(channel_beat_array, self.num_track)
+			self.setup_state_machine(mapping_state_machine)
+			mapping_state_machine.run()
+
+			self.mapped = np.max((self.mapped, mapping_state_machine.mapped), axis=0)
+
 		return self.mapped
 
 	def write_to_json(self, output_path, file_name = 'mapped.json'):
@@ -97,14 +103,16 @@ def test():
 	sf, time_interval = ad.spectralflux('../data/beat_it.mp3')
 	# initialize onset selector for beat selection
 	selector = onset_selector(sf[0, :], 10, 3, 3, 0.3, 0.8)
+	
 	beat_array = selector.find_peaks()
 
+	com_beat_array = np.array([beat_array, beat_array]) # compose a nparray input for testing
+
 	print("Finish detection and beat selection.")
-	print("beat_array.shape() ")
-	print(beat_array.shape)
+	print(com_beat_array.shape)
 	start = time.time()
 	# start beat mapping, this test case map the beats into 4 tracks
-	bm = beat_mapper(sf, beat_array, time_interval, 4)
+	bm = beat_mapper(sf, com_beat_array, time_interval, 4)
 	mapped = bm.map_to_tracks() # this is the essential method
 
 	print("Finish mapping.")
