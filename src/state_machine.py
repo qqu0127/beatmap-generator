@@ -111,7 +111,7 @@ class StateMachine:
 	def __init__(self, beat_array, num_track):
 		self.state_list = []
 		self.state_dict = dict()
-		self.mapped = np.zeros((len(beat_array), num_track))
+		self.mapped = np.zeros((len(beat_array), num_track), dtype=int)
 		self.num_track = num_track
 		self.beat_array = beat_array
 		self.change_threshold = 4 # number of beats that remain in each state
@@ -134,7 +134,7 @@ class StateMachine:
 		current_state = self.state_dict['random'] # suppose always start with random state
 		current_cnt = 0
 		pos = 0
-		print(current_state)
+		#print(current_state)
 		while(pos < len(self.beat_array)):
 			if(self.beat_array[pos] > 0):
 				current_cnt += 1
@@ -143,7 +143,7 @@ class StateMachine:
 			if(current_cnt >= self.change_threshold):
 				current_cnt = 0
 				current_state = self.next_state(current_state) # to be complete, random state transition used in current version
-				print(current_state)
+				#print(current_state)
 			pos += 1
 
 	def test(self):
@@ -187,7 +187,7 @@ def test2():
 	'''
 	beat_array = [1,0,1,3,0,2,0,0,1,0,2,2,1,0,1,5]
 	state_machine = StateMachine(beat_array, 4)
-	name_list = ['random', 'stair', 'switch', 'stair_rev']
+	name_list = ['random', 'stair', 'random', 'switch', 'stair_rev']
 	for name in name_list:
 		state_machine.add_state(State.make_state(name))
 

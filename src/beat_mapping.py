@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 from scipy.ndimage.filters import maximum_filter
 from onset_detection import onset_detector
 from onset_selection import onset_selector
+from state_machine import StateMachine, State
 import json
 import random
 
@@ -23,29 +24,48 @@ class beat_mapper(object):
 		Beat_mapper processes the output of onset_selector and generate a json file for visualization module.
 
 	'''
-	def __init__(self, sf, quantified, time_interval, num_track = 4, rand_seed = 666):
+	def __init__(self, sf, beat_array, time_interval, num_track = 4, rand_seed = 666):
 		self.sf = sf
-		self.quantified = quantified
+		self.beat_array = beat_array
 		self.time_interval = time_interval
 		self.num_track = num_track
-		self.mapped = np.zeros((len(quantified), num_track), dtype=int)
+		#self.mapped = np.zeros((len(beat_array), num_track), dtype=int)
 		self.beat_cnt = 0
+
+		self.mapping_state_machine = StateMachine(beat_array, num_track)
+		self.setup_state_machine()
+
 		random.seed(rand_seed)
+
+	def setup_state_machine(self):
+		name_list = ['random', 'stair', 'random', 'switch', 'stair_rev']
+		for name in name_list:
+			self.mapping_state_machine.add_state(State.make_state(name))
 
 	def map_to_tracks(self):
 		'''
 			The mapping function that maps the selected beats to specified tracks.
-
+			Update 5/30, mapping with state machine as backend.
+			
 			@output:
 				a ndarray with size (len(sf), num_track)
 		'''
+
+		'''
+		==========below is outdated code with naive random mapping=========
 		cnt = 0
-		for i in self.quantified:
+		for i in self.beat_array:
 			if(i > 0):
 				k = random.randint(0, self.num_track - 1)
 				self.mapped[cnt][k] = 1
 				self.beat_cnt += 1
 			cnt += 1
+		return self.mapped
+		'''
+
+		# inpelement state machine
+		self.mapping_state_machine.run()
+		self.mapped = self.mapping_state_machine.mapped
 		return self.mapped
 
 	def write_to_json(self, output_path, file_name = 'mapped.json'):
@@ -77,13 +97,14 @@ def test():
 	sf, time_interval = ad.spectralflux('../data/beat_it.mp3')
 	# initialize onset selector for beat selection
 	selector = onset_selector(sf[0, :], 10, 3, 3, 0.3, 0.8)
-	quantified = selector.find_peaks()
+	beat_array = selector.find_peaks()
 
 	print("Finish detection and beat selection.")
-
+	print("beat_array.shape() ")
+	print(beat_array.shape)
 	start = time.time()
 	# start beat mapping, this test case map the beats into 4 tracks
-	bm = beat_mapper(sf, quantified, time_interval, 4)
+	bm = beat_mapper(sf, beat_array, time_interval, 4)
 	mapped = bm.map_to_tracks() # this is the essential method
 
 	print("Finish mapping.")
