@@ -10,7 +10,8 @@ import time
 import matplotlib.pyplot as plt
 from scipy.ndimage.filters import maximum_filter
 from sklearn import preprocessing
-from onset_selection import  onset_selector
+from onset_selection import onset_selector
+from matplotlib import animation
 
 
 def main(path):
@@ -22,7 +23,7 @@ def main(path):
     # print(sf.shape)
     # print(time_interval)
 
-    # selector = onsetSel(sf[0, :], 3, 3, 0.3, 0.8)
+    # selector = onsetSel(sf[0, :], 10, 3, 3, 0.3, 0.8)
     # quantified = selector.find_peaks()
 
     # plt.figure()
@@ -39,7 +40,7 @@ def main(path):
     # print(sf.shape)
     # print(time_interval)
     #
-    # selector = onsetSel(sf[0, :], 3, 3, 0.3, 0.8)
+    # selector = onset_selector(sf[0, :], 10, 3, 3, 0.3, 0.8)
     # quantified = selector.find_peaks()
     #
     # plt.figure()
@@ -58,8 +59,16 @@ def main(path):
     selector = onset_selector(nwpd[0, :], 10, 3, 3, 0.3, 0.8)
     quantified = selector.find_peaks()
 
-    # print(len(quantified))
-    #
+    plt.figure()
+    fig,left_axis=plt.subplots()
+    right_axis = left_axis.twinx()
+    p1, = left_axis.plot(nwpd[0, : 2000])
+    p2, = right_axis.plot(quantified[0 :2000], 'r--')
+    #right_axis.set_ylim(0, 5)
+    plt.savefig('nwpd.png')
+
+    print(len(quantified))
+
 
     step = 100
 
@@ -75,9 +84,8 @@ def main(path):
     left_axis.set_ylim(0, 0.00035)
 
     right_axis.set_ylim(0, step)
-    right_axis.set_ylim(0, 2)
+    right_axis.set_ylim(0, 10)
 
-    # plt.savefig('nwpd.png')
 
     # fig = plt.figure()
     #
@@ -101,7 +109,7 @@ def main(path):
         # line.set_data(x, quantified[i:i+step])
         # line.set_data(x, nwpd[0, i:i + step])
 
-        p1.set_data(x, nwpd[0, i:i + step])
+        p1.set_data(x, sf[0, i:i + step])
         p2.set_data(x, quantified[i:i + step])
         return p1, p2,
 
@@ -109,10 +117,10 @@ def main(path):
     anim = animation.FuncAnimation(fig, animate, init_func=init,
                                    frames=2000, interval=0, blit=False)
 
-    anim.save('basic_animation.mp4', fps=100, extra_args=['-vcodec', 'libx264'])
+    anim.save('animation_demon.mp4', fps=100, extra_args=['-vcodec', 'libx264'])
 
     plt.show()
 
 
 if __name__ == '__main__':
-    main("/Users/wzq/cs130/beatmap/beatmap-generator/data/" + "beat_it.mp3")
+    main("../data/" + "beat_it.mp3")

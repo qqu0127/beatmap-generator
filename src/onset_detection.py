@@ -33,6 +33,22 @@ class onset_detector(object):
         
         return fre_signal
     
+    def process_signal(self, path = None, method = 'superflux', do_filtering = False, freq_list = [[40.0, 200.0]]):
+        if method == 'spectralflux':
+            return self.spectralflux(path, do_filtering, freq_list)
+        elif method == 'superflux':
+            return self.superflux(path, do_filtering, freq_list)
+        elif method == 'normalized_weighted_phase_deviation':
+            return self.normalized_weighted_phase_deviation(path, do_filtering, freq_list)
+        else:
+            print('Error: Please select a method by changing the method parameter')
+            print('The valid methods are:')
+            print('    spectralflux')
+            print('    superflux')
+            print('    normalized_weighted_phase_deviation')
+            print('ps: If you do not know which one to choose, choose the superflux as default')
+            return None, None
+    
 ###############################################################################
 # Do onset detection using spectral flux algorithm
 # Input： 
@@ -237,11 +253,13 @@ def test(path):
     print(path)
 
     myprocessor = onset_detector(2048, 441)
+    
+    sf, time_interval = myprocessor.process_signal(path, method = 'fake_method', do_filtering = True)
 
     start = time.time()
-    sf, time_interval = myprocessor.spectralflux(path, True)
+    sf, time_interval = myprocessor.process_signal(path, method = 'spectralflux', do_filtering = True)
     print("Running spectral flux use {} seconds.".format(time.time() - start))
-    if sf != None:
+    if sf is not None:
         print(sf.shape)
         print(time_interval)
         N = len(sf)
@@ -251,9 +269,9 @@ def test(path):
             plt.savefig('sf_{}.png'.format(i))
 
     start = time.time()
-    sf, time_interval = myprocessor.superflux(path, True)
+    sf, time_interval = myprocessor.process_signal(path, method = 'superflux', do_filtering = True)
     print("Running super flux use {} seconds.".format(time.time() - start))
-    if sf != None:
+    if sf is not None:
         print(sf.shape)
         print(time_interval)
         N = len(sf)
@@ -263,9 +281,9 @@ def test(path):
             plt.savefig('superflux_{}.png'.format(i))
        
     start = time.time()  
-    nwpd, time_interval = myprocessor.normalized_weighted_phase_deviation(path, True)
+    nwpd, time_interval = myprocessor.process_signal(path, method = 'normalized_weighted_phase_deviation', do_filtering = True)
     print("Running normalizaed weighted phase deviation use {} seconds.".format(time.time() - start))
-    if nwpd != None:
+    if nwpd is not None:
         print(nwpd.shape)
         print(time_interval)
 
