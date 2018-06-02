@@ -19,8 +19,6 @@ class onset_detector(object):
     def __init__(self, frame_size = 2048, hop_size = 441):
         self.frame_size = frame_size
         self.hop_size = hop_size
-        self.low_freq = 0.0
-        self.high_freq = 1.0
         
     def filter_signal(self, fre_signal, low_freq, high_freq):
         N = fre_signal.shape[0]
