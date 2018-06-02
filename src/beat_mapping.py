@@ -79,7 +79,7 @@ class beat_mapper(object):
 
 		return mapped
 
-	def write_to_json(self, mapped, output_path, file_name = 'mapped.json'):
+	def write_to_json(self, mapped, output = 'mapped.json'):
 		'''
 			This method writes all the mapping info to a json file, which is everything needed for the Unity module.
 
@@ -99,7 +99,7 @@ class beat_mapper(object):
 				}
 		json_file=json.dumps(dict)
 
-		with open(os.path.join(output_path, file_name), 'w') as f:
+		with open(output, 'w') as f:
 			f.write(json_file)
 			f.close()
 
@@ -125,7 +125,7 @@ def test():
 	# now write necessary info to a json file for visualization module
 	print("Start writting json file.")
 	start = time.time()
-	bm.write_to_json(mapped, './')
+	bm.write_to_json(mapped)
 	print("Complete.\nRunning time {} seconds.".format(time.time() - start))
 
 	# plot some figures in this test

@@ -38,14 +38,14 @@ class onset_detector(object):
             return self.spectralflux(path, do_filtering, freq_list)
         elif method == 'superflux':
             return self.superflux(path, do_filtering, freq_list)
-        elif method == 'normalized_weighted_phase_deviation':
+        elif method == 'nwpd':
             return self.normalized_weighted_phase_deviation(path, do_filtering, freq_list)
         else:
             print('Error: Please select a method by changing the method parameter')
             print('The valid methods are:')
             print('    spectralflux')
             print('    superflux')
-            print('    normalized_weighted_phase_deviation')
+            print('    nwpd')
             print('ps: If you do not know which one to choose, choose the superflux as default')
             return None, None
     
