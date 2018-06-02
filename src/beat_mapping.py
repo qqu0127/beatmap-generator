@@ -26,16 +26,15 @@ class beat_mapper(object):
 		The constructor method expect the following variable
 
 		@input:
-			beat_array: 2D np.array with shape (NUM_CHANNEL, TIME_LENGTH)
 			time_interval: time interval between two adjacent beats
 			num_track: number of tracks to map on, default set to 4
 			rand_seed: random seed, default set to 666
 	'''
-	def __init__(self, beat_array, time_interval, num_track = 4, rand_seed = 666):
-		self.beat_array = beat_array
+	def __init__(self, time_interval, num_track = 4, rand_seed = 666):
+		#self.beat_array = beat_array
 		self.time_interval = time_interval
 		self.num_track = num_track
-		self.mapped = np.zeros((beat_array.shape[1], num_track), dtype=int)
+		#self.mapped = np.zeros((beat_array.shape[1], num_track), dtype=int)
 		self.beat_cnt = 0
 
 		#self.mapping_state_machine = StateMachine(beat_array, num_track)
@@ -58,7 +57,7 @@ class beat_mapper(object):
 		for name in name_list:
 			this_state_machine.add_state(State.make_state(name))
 
-	def map_to_tracks(self):
+	def map_to_tracks(self, beat_array):
 		'''
 			The mapping function that maps the selected beats to specified tracks.
 			Update 5/30, mapping with state machine as backend.
@@ -66,26 +65,27 @@ class beat_mapper(object):
 			inpelement with state machine, please also see state_machine.py
 			
 			@input:
-				null
+				beat_array: 2D np.array with shape (NUM_CHANNEL, TIME_LENGTH)
 			@output:
 				a ndarray with size (len(sf), num_track)
 		'''
-
-		for channel_beat_array in self.beat_array:
+		mapped = np.zeros((beat_array.shape[1], self.num_track), dtype=int)
+		for channel_beat_array in beat_array:
 			mapping_state_machine = StateMachine(channel_beat_array, self.num_track)
 			self.setup_state_machine(mapping_state_machine)
 			mapping_state_machine.run()
 
-			self.mapped = np.max((self.mapped, mapping_state_machine.mapped), axis=0)
+			mapped = np.max((mapped, mapping_state_machine.mapped), axis=0)
 
-		return self.mapped
+		return mapped
 
-	def write_to_json(self, output_path, file_name = 'mapped.json'):
+	def write_to_json(self, mapped, output_path, file_name = 'mapped.json'):
 		'''
 			This method writes all the mapping info to a json file, which is everything needed for the Unity module.
 
 			@input:
-				output_file, output folder to store the file.
+				mapped, the complete beat map dictory file
+				output_path, output folder to store the file.
 				file_name, optional, name of the file
 
 			@output:
@@ -95,7 +95,7 @@ class beat_mapper(object):
 				'num_track': self.num_track,
 				'time_interval': self.time_interval,
 				'beat_cnt': self.beat_cnt,
-				'mapped': self.mapped.tolist()
+				'mapped': mapped.tolist()
 				}
 		json_file=json.dumps(dict)
 
@@ -116,8 +116,8 @@ def test():
 	print(beat_array.shape)
 	start = time.time()
 	# start beat mapping, this test case map the beats into 4 tracks
-	bm = beat_mapper(beat_array, time_interval, 4)
-	mapped = bm.map_to_tracks() # this is the essential method
+	bm = beat_mapper(time_interval, 4)
+	mapped = bm.map_to_tracks(beat_array) # this is the essential method
 
 	print("Finish mapping.")
 	print("Running time {} seconds.".format(time.time() - start))
@@ -125,7 +125,7 @@ def test():
 	# now write necessary info to a json file for visualization module
 	print("Start writting json file.")
 	start = time.time()
-	bm.write_to_json('./')
+	bm.write_to_json(mapped, './')
 	print("Complete.\nRunning time {} seconds.".format(time.time() - start))
 
 	# plot some figures in this test
