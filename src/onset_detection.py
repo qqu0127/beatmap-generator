@@ -19,8 +19,6 @@ class onset_detector(object):
     def __init__(self, frame_size = 2048, hop_size = 441):
         self.frame_size = frame_size
         self.hop_size = hop_size
-        self.low_freq = 0.0
-        self.high_freq = 1.0
         
     def filter_signal(self, fre_signal, low_freq, high_freq):
         N = fre_signal.shape[0]
@@ -87,7 +85,8 @@ class onset_detector(object):
         time_interval = self.hop_size / sample_rate
         
         sf = None
-        
+        if do_filtering == False:
+            num_freq = 1
         for i in range(num_freq):
             for j in range(num_channels):
                 tmp = sig[:, j]
@@ -149,6 +148,9 @@ class onset_detector(object):
                 digit_freq_list.append([tmp_low, tmp_high])
         
         time_interval = self.hop_size / sample_rate
+        
+        if do_filtering == False:
+            num_freq = 1
         
         sf = None
         for i in range(num_freq):
@@ -217,6 +219,9 @@ class onset_detector(object):
         
         time_interval = self.hop_size / sample_rate
         
+        if do_filtering == False:
+            num_freq = 1
+        
         nwpd = None
         for i in range(num_freq):
             for j in range(num_channels):
@@ -254,10 +259,10 @@ def test(path):
 
     myprocessor = onset_detector(2048, 441)
     
-    sf, time_interval = myprocessor.process_signal(path, method = 'fake_method', do_filtering = True)
+    sf, time_interval = myprocessor.process_signal(path, method = 'fake_method', do_filtering = False)
 
     start = time.time()
-    sf, time_interval = myprocessor.process_signal(path, method = 'spectralflux', do_filtering = True)
+    sf, time_interval = myprocessor.process_signal(path, method = 'spectralflux', do_filtering = False)
     print("Running spectral flux use {} seconds.".format(time.time() - start))
     if sf is not None:
         print(sf.shape)
@@ -269,7 +274,7 @@ def test(path):
             plt.savefig('sf_{}.png'.format(i))
 
     start = time.time()
-    sf, time_interval = myprocessor.process_signal(path, method = 'superflux', do_filtering = True)
+    sf, time_interval = myprocessor.process_signal(path, method = 'superflux', do_filtering = False)
     print("Running super flux use {} seconds.".format(time.time() - start))
     if sf is not None:
         print(sf.shape)
