@@ -151,7 +151,7 @@ class StateMachine:
 		print("number of tracks: {}".format(self.num_track))
 		print("beat_array: " + str(self.beat_array))
 
-def test1():
+def test_state():
 	'''
 		This test is designed to test how the factory method State.make_state() work.
 		We aim to initialize a list of state (of its sub-class) by its name, and call its corresponding mapping function.
@@ -178,7 +178,7 @@ def test1():
 			print(state.get_name() == 'random')
 
 
-def test2():
+def test_state_machine():
 	'''
 		This test is designed to do the sanity check of state_machine.
 		There should be 4 states in this case and 4 tracks.
@@ -198,4 +198,4 @@ def test2():
 
 
 if __name__ == '__main__':
-	test2()
+	test_state_machine()

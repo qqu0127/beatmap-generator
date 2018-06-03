@@ -44,7 +44,7 @@ class onset_selector(object):
                     self.__update_thres(chl, i)
             self.__filter(intvl)
             self.__quantify()
-            #self.__channel_orthogonalize()
+            self.__channel_orthogonalize()
             return np.array(self.__onsetsQuan)
 
     def __filter (self, intvl):
@@ -120,7 +120,10 @@ class onset_selector(object):
                     chl += 1
                     if chl == self.__onsetsChl:
                         for j in range(self.__onsetsChl):
-                            self.__onsetsPeaks[j][i]  = self.__onsetsPeaks[j][i] if j == self.__onsetsChl else 0 
+                            if j == self.__flip:
+                                self.__onsetsPeaks[j][i]  = self.__onsetsPeaks[j][i]  
+                            else:
+                                self.__onsetsPeaks[j][i] = 0
                         self.__flip  = (self.__flip + 1) % self.__onsetsChl
                         break
         else:
@@ -144,7 +147,7 @@ def test(path):
     print(time_interval)
    
     selector = onset_selector(sf, 10, 3, 3, 0.3, 0.2)
-    quantified = selector.find_peaks()
+    quantified = selector.find_peaks(0)
     
     plt.figure()
     fig,left_axis=plt.subplots()    
@@ -169,21 +172,21 @@ def test(path):
     print(time_interval)
      
     selector = onset_selector(sf, 10, 3, 3, 0.3, 0.8)
-    quantified = selector.find_peaks()
+    quantified = selector.find_peaks(0)
     
     plt.figure()
     fig,left_axis=plt.subplots()    
     right_axis = left_axis.twinx()
-    p1, = left_axis.plot(sf[0, : 2000])
-    p2, = right_axis.plot(quantified[0, 0 : 2000], 'r--')    
+    p1, = left_axis.plot(sf[0, : 500])
+    p2, = right_axis.plot(quantified[0, 0 : 500], 'r--')    
     #right_axis.set_ylim(0, 5)
     plt.savefig('superflux0.png')
 
     plt.figure()
     fig,left_axis=plt.subplots()    
     right_axis = left_axis.twinx()
-    p1, = left_axis.plot(sf[1, : 2000])
-    p2, = right_axis.plot(quantified[1, 0 : 2000], 'r--')    
+    p1, = left_axis.plot(sf[1, : 500])
+    p2, = right_axis.plot(quantified[1, 0 : 500], 'r--')    
     #right_axis.set_ylim(0, 5)
     plt.savefig('superflux1.png')
 
@@ -193,7 +196,7 @@ def test(path):
     print(nwpd.shape)
     print(time_interval)
     selector = onset_selector(nwpd, 10, 3, 3, 0.3, 0.5) # this set of params reduce probability of false negative
-    quantified = selector.find_peaks()
+    quantified = selector.find_peaks(0)
     
     plt.figure()
     fig,left_axis=plt.subplots()    
