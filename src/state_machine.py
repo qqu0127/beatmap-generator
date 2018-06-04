@@ -134,10 +134,12 @@ class StateMachine:
 		current_state = self.state_dict['random'] # suppose always start with random state
 		current_cnt = 0
 		pos = 0
+		cnt = 0
 		#print(current_state)
 		while(pos < len(self.beat_array)):
 			if(self.beat_array[pos] > 0):
 				current_cnt += 1
+				cnt += 1
 				ch = current_state.do_mapping(self.num_track)
 				self.mapped[pos][ch] = 1
 			if(current_cnt >= self.change_threshold):
@@ -145,6 +147,7 @@ class StateMachine:
 				current_state = self.next_state(current_state) # to be complete, random state transition used in current version
 				#print(current_state)
 			pos += 1
+		return cnt
 
 	def test(self):
 		print("number of state: {}".format(len(self.state_list)))

@@ -73,7 +73,7 @@ class beat_mapper(object):
 		for channel_beat_array in beat_array:
 			mapping_state_machine = StateMachine(channel_beat_array, self.num_track)
 			self.setup_state_machine(mapping_state_machine)
-			mapping_state_machine.run()
+			self.beat_cnt = mapping_state_machine.run()
 
 			mapped = np.max((mapped, mapping_state_machine.mapped), axis=0)
 
@@ -95,6 +95,7 @@ class beat_mapper(object):
 				'num_track': self.num_track,
 				'time_interval': self.time_interval,
 				'beat_cnt': self.beat_cnt,
+				'length': len(mapped.tolist()),
 				'mapped': mapped.tolist()
 				}
 		json_file=json.dumps(dict)
@@ -118,7 +119,7 @@ def test():
 	# start beat mapping, this test case map the beats into 4 tracks
 	bm = beat_mapper(time_interval, 4)
 	mapped = bm.map_to_tracks(beat_array) # this is the essential method
-
+	print(len(mapped.tolist()))
 	print("Finish mapping.")
 	print("Running time {} seconds.".format(time.time() - start))
 
