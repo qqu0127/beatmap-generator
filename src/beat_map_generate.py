@@ -18,13 +18,13 @@ def beat_map_generate(param):
 
 		Usage:
 			python beat_map_generate.py 
-				--path=[AUDIO_PATH]
+				--input=[AUDIO_PATH]
 				--num_tracks=[NUM_TRACKS]
 				--output=[OUTPUT_PATH]
 				--method=[DETECTION_METHOD]
 	'''
 	detector = make_detector()
-	sf, time_interval = detector.process_signal(param.path, method=param.method, do_filtering=True)
+	sf, time_interval = detector.process_signal(param.input, method=param.method, do_filtering=True)
 
 	param.sf = sf
 	param.time_interval = time_interval
@@ -51,7 +51,7 @@ def make_mapper(param):
 
 def parse_args():
 	parser = argparse.ArgumentParser()
-	parser.add_argument('--path', type=str, required=True, 
+	parser.add_argument('--input', type=str, required=True, 
 		help='Please specify the input audio file.')
 	parser.add_argument('--num_tracks', type=int, required=False, default=4,
 		help='You can specify the number of tracks to map on.')
