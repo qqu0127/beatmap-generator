@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class MoveBeats : MonoBehaviour {
 
-	public float speed = 4.0f;
+	public float speed = 8.0f;
+	public string name = "beat";
 
 	// Use this for initialization
 	void Start () {
+		speed = 60.0f;
 //		transform.Translate (Vector2.right * speed * Time.deltaTime);
 	}
 	
