@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+
+'''
+@author: Quincy Qu
+
+This document contains the command line entry point for the whole algorithm pipeline.
+The wrapper method: beat_map_generate()
+and other utility functions.
+'''
 import numpy as np
 import madmom
 import os
@@ -22,6 +31,7 @@ def beat_map_generate(param):
 				--num_tracks=[NUM_TRACKS]
 				--output=[OUTPUT_PATH]
 				--method=[DETECTION_METHOD]
+				--free_beat_range=[FREE_BEAT_RANGE]
 	'''
 	detector = make_detector()
 	sf, time_interval = detector.process_signal(param.input, method=param.method, do_filtering=True)
