@@ -25,12 +25,11 @@ def beat_map_generate(param):
 	'''
 	detector = make_detector()
 	sf, time_interval = detector.process_signal(param.input, method=param.method, do_filtering=True)
-
 	param.sf = sf
 	param.time_interval = time_interval
 
 	selector = make_selector(param)
-	beat_array = selector.find_peaks()
+	beat_array = selector.find_peaks(param.free_beat_range)
 
 	mapper = make_mapper(param)
 	mapped = mapper.map_to_tracks(beat_array)
@@ -59,7 +58,8 @@ def parse_args():
 		help='You can specify the output file name.')
 	parser.add_argument('--method', type=str, required=False, default='superflux', choices=['superflux', 'spectralflux', 'nwpd'],
 		help='You can specify the detection method, please refer to onset_detection.')
-
+	parser.add_argument('--free_beat_range', type=int, required=False, default=20,
+		help='You can specify the free beat range for beat selection.')
 	return parser.parse_args()
 
 if __name__ == '__main__':

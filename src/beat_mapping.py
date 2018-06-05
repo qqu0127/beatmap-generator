@@ -73,7 +73,7 @@ class beat_mapper(object):
 		for channel_beat_array in beat_array:
 			mapping_state_machine = StateMachine(channel_beat_array, self.num_track)
 			self.setup_state_machine(mapping_state_machine)
-			self.beat_cnt = mapping_state_machine.run()
+			self.beat_cnt += mapping_state_machine.run()
 
 			mapped = np.max((mapped, mapping_state_machine.mapped), axis=0)
 

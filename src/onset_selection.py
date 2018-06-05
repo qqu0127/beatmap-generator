@@ -30,7 +30,7 @@ class onset_selector(object):
         self.__phi = phi
         self.__flip = 0 
 
-    def find_peaks(self, intvl = 200):
+    def find_peaks(self, intvl = 20):
         try:
             return self.__onsetsQuan
         except AttributeError:        
