@@ -119,7 +119,7 @@ class StateMachine:
 		self.num_track = num_track
 		self.beat_array = beat_array
 		self.change_threshold = 4 # number of beats that remain in each state
-
+		self.current_state = None
 	def add_state(self, state):
 		self.state_list.append(state)
 		self.state_dict[state.get_name()] = state
@@ -135,21 +135,19 @@ class StateMachine:
 		return self.state_list[rand_int]
 
 	def run(self):
-		current_state = self.state_dict['random'] # suppose always start with random state
+		self.current_state = self.state_dict['random'] # suppose always start with random state
 		current_cnt = 0
 		pos = 0
 		cnt = 0
-		#print(current_state)
 		while(pos < len(self.beat_array)):
 			if(self.beat_array[pos] > 0):
 				current_cnt += 1
 				cnt += 1
-				ch = current_state.do_mapping(self.num_track)
+				ch = self.current_state.do_mapping(self.num_track)
 				self.mapped[pos][ch] = 1
 			if(current_cnt >= self.change_threshold):
 				current_cnt = 0
-				current_state = self.next_state(current_state) # to be complete, random state transition used in current version
-				#print(current_state)
+				self.current_state = self.next_state(self.current_state) # to be complete, random state transition used in current version
 			pos += 1
 		return cnt
 
