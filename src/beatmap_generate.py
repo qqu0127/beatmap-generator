@@ -34,7 +34,7 @@ def beatmap_generate(param):
 				--free_beat_range=[FREE_BEAT_RANGE]
 	'''
 	detector = make_detector()
-	sf, time_interval = detector.process_signal(param.input, method=param.method, do_filtering=True)
+	sf, time_interval = detector.process_signal(param.input, method=param.method, do_filtering=param.filter)
 	param.sf = sf
 	param.time_interval = time_interval
 
@@ -70,6 +70,8 @@ def parse_args():
 		help='You can specify the detection method, please refer to onset_detection.')
 	parser.add_argument('--free_beat_range', type=int, required=False, default=20,
 		help='You can specify the free beat range for beat selection.')
+	parser.add_argument('--filter', type=bool, required=False, default=False,
+		help='You can decide whether use filter in detector.')
 	return parser.parse_args()
 
 if __name__ == '__main__':
