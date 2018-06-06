@@ -4,13 +4,17 @@
 @author: Quincy Qu
 
 This file contains the utility class for state machine implmentation used in beat_mapping. 
+	class State  (and its children classes)
+	class StateMachine
+	and testing functions
+
 One base class STATE, it has 4 children classes.
 StateMachine contains the a few states and the transition table.
 
+
 TODO:
 1. generate more tests and validate the code
-2. update and complete the interface in beat_mapping
-3. substitute current random transition table
+2. substitute current random transition table
 
 '''
 

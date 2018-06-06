@@ -2,6 +2,12 @@
 
 '''
 @author: Quincy Qu
+
+This document contains beat mapping stuff as the last module in the processing pipeline.
+	class beat_mapper
+	class parse_beat_map_row
+	and testing functions
+	
 '''
 
 import numpy as np
@@ -111,6 +117,13 @@ class beat_mapper(object):
 
 
 class parse_beat_map_row(object):
+	'''
+		This class aim to parse a list to a "beats" object at each time point, for beatmap file.
+		The input is a list of integer. 
+		We use dict() for internal data storage.
+		e.g., {"a": 0, "b": 1, "c": 0, "d": 0}
+
+	'''
 	def __init__(self, row):
 		self.num_track = len(row)
 		self.row_dict = dict()
