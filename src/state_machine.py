@@ -4,13 +4,17 @@
 @author: Quincy Qu
 
 This file contains the utility class for state machine implmentation used in beat_mapping. 
+	class State  (and its children classes)
+	class StateMachine
+	and testing functions
+
 One base class STATE, it has 4 children classes.
 StateMachine contains the a few states and the transition table.
 
+
 TODO:
 1. generate more tests and validate the code
-2. update and complete the interface in beat_mapping
-3. substitute current random transition table
+2. substitute current random transition table
 
 '''
 
@@ -115,7 +119,7 @@ class StateMachine:
 		self.num_track = num_track
 		self.beat_array = beat_array
 		self.change_threshold = 4 # number of beats that remain in each state
-
+		self.current_state = None
 	def add_state(self, state):
 		self.state_list.append(state)
 		self.state_dict[state.get_name()] = state
@@ -131,27 +135,28 @@ class StateMachine:
 		return self.state_list[rand_int]
 
 	def run(self):
-		current_state = self.state_dict['random'] # suppose always start with random state
+		self.current_state = self.state_dict['random'] # suppose always start with random state
 		current_cnt = 0
 		pos = 0
-		#print(current_state)
+		cnt = 0
 		while(pos < len(self.beat_array)):
 			if(self.beat_array[pos] > 0):
 				current_cnt += 1
-				ch = current_state.do_mapping(self.num_track)
+				cnt += 1
+				ch = self.current_state.do_mapping(self.num_track)
 				self.mapped[pos][ch] = 1
 			if(current_cnt >= self.change_threshold):
 				current_cnt = 0
-				current_state = self.next_state(current_state) # to be complete, random state transition used in current version
-				#print(current_state)
+				self.current_state = self.next_state(self.current_state) # to be complete, random state transition used in current version
 			pos += 1
+		return cnt
 
 	def test(self):
 		print("number of state: {}".format(len(self.state_list)))
 		print("number of tracks: {}".format(self.num_track))
 		print("beat_array: " + str(self.beat_array))
 
-def test1():
+def test_state():
 	'''
 		This test is designed to test how the factory method State.make_state() work.
 		We aim to initialize a list of state (of its sub-class) by its name, and call its corresponding mapping function.
@@ -178,7 +183,7 @@ def test1():
 			print(state.get_name() == 'random')
 
 
-def test2():
+def test_state_machine():
 	'''
 		This test is designed to do the sanity check of state_machine.
 		There should be 4 states in this case and 4 tracks.
@@ -198,4 +203,4 @@ def test2():
 
 
 if __name__ == '__main__':
-	test2()
+	test_state_machine()

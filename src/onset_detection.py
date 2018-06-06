@@ -19,6 +19,7 @@ class onset_detector(object):
     def __init__(self, frame_size = 2048, hop_size = 441):
         self.frame_size = frame_size
         self.hop_size = hop_size
+<<<<<<< HEAD
         		
 ###############################################################################
 # The wrapper of the onset detection algorithm 
@@ -37,6 +38,20 @@ class onset_detector(object):
 #           the first dimension is (the number of pass band you want * channels)
 #       time_interval: time interval between 2 points in sf                  
 ###############################################################################     
+=======
+        
+    def filter_signal(self, fre_signal, low_freq, high_freq):
+        N = fre_signal.shape[0]
+        length = fre_signal.shape[1]
+        low_fre_n = int(length * low_freq) + 1
+        high_fre_n = int(length * high_freq)
+        for i in range(N):
+            fre_signal[i][0: low_fre_n] = np.zeros((low_fre_n))
+            fre_signal[i][high_fre_n:] = np.zeros((length - high_fre_n))
+        
+        return fre_signal
+    
+>>>>>>> 6265f2a7f13429dccf2897cae55c3585caa843a0
     def process_signal(self, path = None, method = 'superflux', do_filtering = False, freq_list = [[40.0, 200.0]]):
         if method == 'spectralflux':
             return self.spectralflux(path, do_filtering, freq_list)

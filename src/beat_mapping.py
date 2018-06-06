@@ -2,6 +2,12 @@
 
 '''
 @author: Quincy Qu
+
+This document contains beat mapping stuff as the last module in the processing pipeline.
+	class beat_mapper
+	class parse_beat_map_row
+	and testing functions
+	
 '''
 
 import numpy as np
@@ -73,7 +79,7 @@ class beat_mapper(object):
 		for channel_beat_array in beat_array:
 			mapping_state_machine = StateMachine(channel_beat_array, self.num_track)
 			self.setup_state_machine(mapping_state_machine)
-			mapping_state_machine.run()
+			self.beat_cnt += mapping_state_machine.run()
 
 			mapped = np.max((mapped, mapping_state_machine.mapped), axis=0)
 
@@ -91,17 +97,47 @@ class beat_mapper(object):
 			@output:
 				null
 		'''
+		mapped_buf = []
+		for row in mapped.tolist():
+			par = parse_beat_map_row(row)
+			mapped_buf.append(par.get_parse())
+
 		dict = {
 				'num_track': self.num_track,
 				'time_interval': self.time_interval,
 				'beat_cnt': self.beat_cnt,
-				'mapped': mapped.tolist()
+				'length': len(mapped.tolist()),
+				'mapped': mapped_buf
 				}
 		json_file=json.dumps(dict)
 
 		with open(output, 'w') as f:
 			f.write(json_file)
 			f.close()
+
+
+class parse_beat_map_row(object):
+	'''
+		This class aim to parse a list to a "beats" object at each time point, for beatmap file.
+		The input is a list of integer. 
+		We use dict() for internal data storage.
+		e.g., {"a": 0, "b": 1, "c": 0, "d": 0}
+
+	'''
+	def __init__(self, row):
+		self.num_track = len(row)
+		self.row_dict = dict()
+		for num in range(self.num_track):
+			self.row_dict[chr(num + ord('a'))] = row[num]
+
+	def __str__(self):
+		return str(self.row_dict)
+	def get_parse(self):
+		return self.row_dict
+
+def test_parse():
+	par = parse_beat_map_row([1,3,5,7])
+	print(par)
 
 def test():
 	# initialize the audio detector and conduct filtering
@@ -118,7 +154,7 @@ def test():
 	# start beat mapping, this test case map the beats into 4 tracks
 	bm = beat_mapper(time_interval, 4)
 	mapped = bm.map_to_tracks(beat_array) # this is the essential method
-
+	print(len(mapped.tolist()))
 	print("Finish mapping.")
 	print("Running time {} seconds.".format(time.time() - start))
 
