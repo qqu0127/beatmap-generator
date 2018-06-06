@@ -11,14 +11,14 @@ public class LoadBeats : MonoBehaviour
 
 	private string gameDataProjectFilePath = "/BeatAssets/beat_map.json";
 
-//	[MenuItem ("Window/Game Data Editor")]
-//	static void Init()
-//	{
-//		EditorWindow.GetWindow (typeof(GameDataEditor)).Show ();
-//	}
-//
-//	void OnGUI()
-//	{
+	[MenuItem ("Window/Game Data Editor")]
+	static void Init()
+	{
+		EditorWindow.GetWindow (typeof(LoadBeats)).Show ();
+	}
+
+	void OnGUI()
+	{
 //		if (gameData != null) 
 //		{
 //			SerializedObject serializedObject = new SerializedObject (this);
@@ -32,20 +32,22 @@ public class LoadBeats : MonoBehaviour
 //				SaveGameData();
 //			}
 //		}
-//
-//		if (GUILayout.Button ("Load data"))
-//		{
-//			LoadGameData();
-//		}
-//	}
+
+		if (GUILayout.Button ("Load data"))
+		{
+			LoadGameData();
+			instantiateBeats();
+		}
+	}
 
 
 	void Start () {
-		LoadGameData();
+//		gt = GetComponent<GUIText>();
+//		LoadGameData();
 //		Debug.Log(gameData.num_track);
 //		Debug.Log(gameData.beat_cnt);
 //		Debug.Log(gameData.mapped);
-		instantiateBeats();
+//		instantiateBeats();
 	}
 
 	void instantiateBeats () {
@@ -103,6 +105,27 @@ public class LoadBeats : MonoBehaviour
 //			}
 //		}
 	}
+
+//	void update() {
+//		foreach (char c in Input.inputString)
+//		{
+//			if (c == '\b') // has backspace/delete been pressed?
+//			{
+//				if (gt.text.Length != 0)
+//				{
+//					gt.text = gt.text.Substring(0, gt.text.Length - 1);
+//				}
+//			}
+//			else if ((c == '\n') || (c == '\r')) // enter/return
+//			{
+//				print("User entered their name: " + gt.text);
+//			}
+//			else
+//			{
+//				gt.text += c;
+//			}
+//		}
+//	}
 
 	private void LoadGameData()
 	{

@@ -5,7 +5,7 @@ using UnityEngine;
 public class MoveBeats : MonoBehaviour {
 
 	public float speed = 8.0f;
-	public string name = "beat";
+	public string tag = "name";
 
 	// Use this for initialization
 	void Start () {

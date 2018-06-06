@@ -43,6 +43,7 @@ public class CollisionDetect : MonoBehaviour {
 //		openhatSource.Play();
 		Destroy(col.gameObject);
 //		}
+
 	}
 
 }
