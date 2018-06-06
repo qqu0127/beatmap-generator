@@ -19,20 +19,24 @@ class onset_detector(object):
     def __init__(self, frame_size = 2048, hop_size = 441):
         self.frame_size = frame_size
         self.hop_size = hop_size
-        self.low_freq = 0.0
-        self.high_freq = 1.0
-        
-    def filter_signal(self, fre_signal, low_freq, high_freq):
-        N = fre_signal.shape[0]
-        length = fre_signal.shape[1]
-        low_fre_n = int(length * low_freq) + 1
-        high_fre_n = int(length * high_freq)
-        for i in range(N):
-            fre_signal[i][0: low_fre_n] = np.zeros((low_fre_n))
-            fre_signal[i][high_fre_n:] = np.zeros((length - high_fre_n))
-        
-        return fre_signal
-    
+        		
+###############################################################################
+# The wrapper of the onset detection algorithm 
+# Call this method to use this class please
+# 
+# Input： 
+#       path: the path of the audio file
+#       method: choose which method to use
+#       do_filtering: indicate whether you want to filter the audio signal, please enter the 
+#                     band you want to keep in the freq_list if you set it to True
+#       freq_list: the bandwidth you want to keep, enter a list, each item in this list 
+#                  is in the form of [low_freq, high_freq] 
+# Output:
+#       This method will call the algorithm indicated in method and if the method is invalid, return error message   
+#       sf: the spectral of change according to time;
+#           the first dimension is (the number of pass band you want * channels)
+#       time_interval: time interval between 2 points in sf                  
+###############################################################################     
     def process_signal(self, path = None, method = 'superflux', do_filtering = False, freq_list = [[40.0, 200.0]]):
         if method == 'spectralflux':
             return self.spectralflux(path, do_filtering, freq_list)
@@ -48,6 +52,26 @@ class onset_detector(object):
             print('    nwpd')
             print('ps: If you do not know which one to choose, choose the superflux as default')
             return None, None
+			
+###############################################################################
+# Do filtering using rectangle window
+# Input： 
+#       fre_signal: signal in frequency domain (signal output by STFT)
+#       low_freq: the lower bound of the pass band
+#		high_freq: the upper bound of the pass band
+# Output:
+#       fre_signal: the signal(in frequency domain) after filtering      
+############################################################################### 			
+    def filter_signal(self, fre_signal, low_freq, high_freq):
+        N = fre_signal.shape[0]
+        length = fre_signal.shape[1]
+        low_fre_n = int(length * low_freq) + 1
+        high_fre_n = int(length * high_freq)
+        for i in range(N):
+            fre_signal[i][0: low_fre_n] = np.zeros((low_fre_n))
+            fre_signal[i][high_fre_n:] = np.zeros((length - high_fre_n))
+        
+        return fre_signal
     
 ###############################################################################
 # Do onset detection using spectral flux algorithm
