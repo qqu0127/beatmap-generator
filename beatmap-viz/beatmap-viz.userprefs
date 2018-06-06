@@ -1,6 +1,13 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/CollisionDetect.cs">
+    <Files>
+      <File FileName="Assets/LoadBeats.cs" Line="62" Column="54" />
+      <File FileName="Assets/InstantiateBeats.cs" Line="12" Column="29" />
+      <File FileName="Assets/CollisionDetect.cs" Line="36" Column="7" />
+      <File FileName="Assets/MoveBeats.cs" Line="11" Column="17" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
