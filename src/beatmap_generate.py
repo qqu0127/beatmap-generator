@@ -21,12 +21,12 @@ from onset_selection import onset_selector
 from beat_mapping import beat_mapper
 from state_machine import State, StateMachine
 
-def beat_map_generate(param):
+def beatmap_generate(param):
 	'''
 		This is the entry point that starts the processing pipeline, with all bells and whistles.
 
 		Usage:
-			python beat_map_generate.py 
+			python beatmap_generate.py 
 				--input=[AUDIO_PATH]
 				--num_tracks=[NUM_TRACKS]
 				--output=[OUTPUT_PATH]
@@ -74,5 +74,5 @@ def parse_args():
 
 if __name__ == '__main__':
 	args = parse_args()
-	beat_map_generate(args)
+	beatmap_generate(args)
 
