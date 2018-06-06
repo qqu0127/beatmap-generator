@@ -26,12 +26,12 @@ Please refer to dockerfile for environment setup.
 ### Running the Program
 * A quick start  
 ```
-python beat_map_generate.py --input='../data/beat_it.mp3'
+python beatmap_generate.py --input='../data/beat_it.mp3'
 ```
 This will generate the beatmap in current folder named "beat_map.json"  
 You can also specify more arguments for advanced setting, refer to full usage as following.  
 ```
-python beat_map_generate.py
+python beatmap_generate.py
 	--input=[AUDIO_PATH]
 	--num_tracks=[NUM_TRACKS]
 	--output=[OUTPUT_PATH]
