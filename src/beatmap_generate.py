@@ -32,6 +32,7 @@ def beatmap_generate(param):
 				--output=[OUTPUT_PATH]
 				--method=[DETECTION_METHOD]
 				--free_beat_range=[FREE_BEAT_RANGE]
+				--filter=[ADD_FILTER_OR_NOT]
 	'''
 	detector = make_detector()
 	sf, time_interval = detector.process_signal(param.input, method=param.method, do_filtering=param.filter)
@@ -60,11 +61,12 @@ def make_mapper(param):
 
 def parse_args():
 	parser = argparse.ArgumentParser()
+	BEATMAP_PATH_DEFAULT = "../beatmap-viz/Assets/BeatAssets/"
 	parser.add_argument('--input', type=str, required=True, 
 		help='Please specify the input audio file.')
 	parser.add_argument('--num_tracks', type=int, required=False, default=4,
 		help='You can specify the number of tracks to map on.')
-	parser.add_argument('--output', type=str, required=False, default='beat_map.json',
+	parser.add_argument('--output', type=str, required=False, default=BEATMAP_PATH_DEFAULT + "beat_map.json",
 		help='You can specify the output file name.')
 	parser.add_argument('--method', type=str, required=False, default='superflux', choices=['superflux', 'spectralflux', 'nwpd'],
 		help='You can specify the detection method, please refer to onset_detection.')
