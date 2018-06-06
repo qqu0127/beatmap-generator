@@ -8,8 +8,12 @@ public class LoadBeats : MonoBehaviour
 {
 
 	public BeatsData gameData;
+	public AudioSource music;
+	public string auidoFileName;
+	public string jsonFileName;
 
-	private string gameDataProjectFilePath = "/BeatAssets/beat_map.json";
+	public AudioSource[] allMyAudioSources;
+	private string gameDataProjectFilePath = "/BeatAssets/";
 
 	[MenuItem ("Window/Game Data Editor")]
 	static void Init()
@@ -37,11 +41,18 @@ public class LoadBeats : MonoBehaviour
 		{
 			LoadGameData();
 			instantiateBeats();
+			AudioClip audioToPlay = Resources.Load<AudioClip>("AudioAssets/" + auidoFileName);
+			Debug.Log (auidoFileName);
+			Debug.Log (jsonFileName);
+			music = allMyAudioSources[0];
+			music.clip = audioToPlay;
+			music.PlayDelayed(0);
 		}
 	}
 
 
 	void Start () {
+		allMyAudioSources = GetComponents<AudioSource>();
 //		gt = GetComponent<GUIText>();
 //		LoadGameData();
 //		Debug.Log(gameData.num_track);
@@ -50,10 +61,18 @@ public class LoadBeats : MonoBehaviour
 //		instantiateBeats();
 	}
 
+	public void getJsonInput(string intputJson) {
+		jsonFileName = intputJson;
+	}
+
+	public void getAudioInput(string inputAudio) {
+		auidoFileName = inputAudio;
+	}
+
 	void instantiateBeats () {
 
 		int x = 0;
-		int initial_distance = 20;
+		int initial_distance = 5;
 
 		for (int p = 0; p < gameData.length; p++) {
 //			for (int q = 0; q < gameData.num_track; q++) {
@@ -129,7 +148,7 @@ public class LoadBeats : MonoBehaviour
 
 	private void LoadGameData()
 	{
-		string filePath = Application.dataPath + gameDataProjectFilePath;
+		string filePath = Application.dataPath + gameDataProjectFilePath + jsonFileName + ".json";
 
 		if (File.Exists (filePath)) {
 			string dataAsJson = File.ReadAllText (filePath);

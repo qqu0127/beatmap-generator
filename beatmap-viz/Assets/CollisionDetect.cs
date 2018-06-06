@@ -16,9 +16,8 @@ public class CollisionDetect : MonoBehaviour {
 //		snareSource = allMyAudioSources[1];
 //		closehatSource = allMyAudioSources[2];
 //		openhatSource = allMyAudioSources[3];
-		music = allMyAudioSources[4];
-		music.Play ();
-
+//		music = allMyAudioSources[4];
+//		music.Play ();
 	}
 
 	void OnCollisionEnter (Collision col)
