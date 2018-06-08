@@ -35,13 +35,13 @@ def main(path):
     # plt.savefig('sf.png')
 
     start = time.time()
-    sf, time_interval = myprocessor.superflux(path, True)
+    sf, time_interval = myprocessor.superflux(path, False)
     print("Running super flux use {} seconds.".format(time.time() - start))
     print(sf.shape)
     print(time_interval)
 
     selector = onset_selector(sf, 10, 3, 3, 0.3, 0.8)
-    quantified = selector.find_peaks(intvl=40)
+    quantified = selector.find_peaks(intvl=20)
 
     plt.figure()
     fig,left_axis=plt.subplots()
@@ -119,7 +119,7 @@ def main(path):
 
     # call the animator.  blit=True means only re-draw the parts that have changed.
     anim = animation.FuncAnimation(fig, animate, init_func=init,
-                                   frames=10000, interval=0, blit=False)
+                                   frames=2000, interval=0, blit=False)
 
     anim.save('animation_demon.mp4', fps=100, extra_args=['-vcodec', 'libx264'])
 

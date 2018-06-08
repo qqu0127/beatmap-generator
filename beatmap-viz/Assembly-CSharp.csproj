@@ -51,10 +51,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\CollisionDetect.cs" />
-     <Compile Include="Assets\InstantiateBeats.cs" />
-     <Compile Include="Assets\LoadBeats.cs" />
-     <Compile Include="Assets\MoveBeats.cs" />
+     <Compile Include="Assets\Scripts\CollisionDetect.cs" />
+     <Compile Include="Assets\Scripts\InstantiateBeats.cs" />
+     <Compile Include="Assets\Scripts\LoadBeats.cs" />
+     <Compile Include="Assets\Scripts\MoveBeats.cs" />
  <Reference Include="UnityEngine.UIAutomation">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/UIAutomation/UnityEngine.UIAutomation.dll</HintPath>
  </Reference>
