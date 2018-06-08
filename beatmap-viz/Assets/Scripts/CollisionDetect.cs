@@ -22,27 +22,21 @@ public class CollisionDetect : MonoBehaviour {
 
 	void OnCollisionEnter (Collision col)
 	{
-//		if(col.gameObject.name == "beat")
-//		{
-		if (col.gameObject.transform.position.z == -3) {
-			kickSource.Play();
-		} 
-		if (col.gameObject.transform.position.z == -1) {
-			snareSource.Play();
-		} 
-		if (col.gameObject.transform.position.z == 1) {
-			closehatSource.Play();
-		} 
-		if (col.gameObject.transform.position.z == 3) {
-			openhatSource.Play();
-		} 
-//		kickSource.Play();
-//		snareSource.Play();
-//		closehatSource.Play();
-//		openhatSource.Play();
-		Destroy(col.gameObject);
+//		if(col.gameObject.name == "beat") {
+//			if (col.gameObject.transform.position.z == -3) {
+//				kickSource.Play();
+//			} 
+//			if (col.gameObject.transform.position.z == -1) {
+//				snareSource.Play();
+//			} 
+//			if (col.gameObject.transform.position.z == 1) {
+//				closehatSource.Play();
+//			} 
+//			if (col.gameObject.transform.position.z == 3) {
+//				openhatSource.Play();
+//			} 
 //		}
-
+		Destroy(col.gameObject);
 	}
 
 }

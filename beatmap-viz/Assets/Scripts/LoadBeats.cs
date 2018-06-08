@@ -23,20 +23,6 @@ public class LoadBeats : MonoBehaviour
 
 	void OnGUI()
 	{
-//		if (gameData != null) 
-//		{
-//			SerializedObject serializedObject = new SerializedObject (this);
-//			SerializedProperty serializedProperty = serializedObject.FindProperty ("gameData");
-//			EditorGUILayout.PropertyField (serializedProperty, true);
-//
-//			serializedObject.ApplyModifiedProperties ();
-//
-//			if (GUILayout.Button ("Save data"))
-//			{
-//				SaveGameData();
-//			}
-//		}
-
 		if (GUILayout.Button ("Load data"))
 		{
 			LoadGameData();
@@ -53,12 +39,6 @@ public class LoadBeats : MonoBehaviour
 
 	void Start () {
 		allMyAudioSources = GetComponents<AudioSource>();
-//		gt = GetComponent<GUIText>();
-//		LoadGameData();
-//		Debug.Log(gameData.num_track);
-//		Debug.Log(gameData.beat_cnt);
-//		Debug.Log(gameData.mapped);
-//		instantiateBeats();
 	}
 
 	public void getJsonInput(string intputJson) {
@@ -75,7 +55,6 @@ public class LoadBeats : MonoBehaviour
 		int initial_distance = 100;
 
 		for (int p = 0; p < gameData.length; p++) {
-//			for (int q = 0; q < gameData.num_track; q++) {
 			if (gameData.mapped[p].a == 1) {
 				Instantiate (Resources.Load("BeatOne"), new Vector3 (x+initial_distance, 1, 3), Quaternion.identity);
 			} 
@@ -94,58 +73,11 @@ public class LoadBeats : MonoBehaviour
 			if (gameData.num_track == 6 && gameData.mapped[p].f == 1) {
 				Instantiate (Resources.Load("BeatSix"), new Vector3 (x+initial_distance, 1, -7), Quaternion.identity);
 			}
-//			}
 			x += 1;
 		}
 		Debug.Log(x);
-
-
-//		for (int y = 0; y < 4; y++) {
-//
-//			if (y == 0) {
-//				for (int x = 0; x < 5; x++) {
-//					Instantiate (Resources.Load("BeatOne"), new Vector3 (x+25, 1, 3), Quaternion.identity);
-//				}
-//			} 
-//			else if (y == 1) {
-//				for (int x = 0; x < 5; x++) {
-//					Instantiate (Resources.Load("BeatTwo"), new Vector3 (x+25, 1, 1), Quaternion.identity);
-//				}
-//			} 
-//			else if (y == 2) {
-//				for (int x = 0; x < 5; x++) {
-//					Instantiate (Resources.Load("BeatThree"), new Vector3 (x+25, 1, -1), Quaternion.identity);
-//				}
-//			} 
-//			else if (y == 3) {
-//				for (int x = 0; x < 5; x++) {
-//					Instantiate (Resources.Load("BeatFour"), new Vector3 (x+25, 1, -3), Quaternion.identity);
-//				}
-//			}
-//		}
 	}
-
-//	void update() {
-//		foreach (char c in Input.inputString)
-//		{
-//			if (c == '\b') // has backspace/delete been pressed?
-//			{
-//				if (gt.text.Length != 0)
-//				{
-//					gt.text = gt.text.Substring(0, gt.text.Length - 1);
-//				}
-//			}
-//			else if ((c == '\n') || (c == '\r')) // enter/return
-//			{
-//				print("User entered their name: " + gt.text);
-//			}
-//			else
-//			{
-//				gt.text += c;
-//			}
-//		}
-//	}
-
+		
 	private void LoadGameData()
 	{
 		string filePath = Application.dataPath + gameDataProjectFilePath + jsonFileName + ".json";
@@ -163,7 +95,6 @@ public class LoadBeats : MonoBehaviour
 	{
 
 		string dataAsJson = JsonUtility.ToJson (gameData);
-
 		string filePath = Application.dataPath + gameDataProjectFilePath;
 		File.WriteAllText (filePath, dataAsJson);
 
@@ -180,8 +111,6 @@ public class BeatsData
 	public int beat_cnt;
 	public int length;
 	public List<timestamp> mapped;
-//	public List<string> mapped;
-
 }
 
 
@@ -194,6 +123,4 @@ public class timestamp
 	public int d;
 	public int e;
 	public int f;
-//	public List<int> stamp;
-//	public string[] t;
 }
